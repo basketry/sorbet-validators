@@ -6,7 +6,7 @@
 
 # typed: strict
 
-module BasketryExample::V1
+module BasketryExample::V1::Types
   class ValidationError < T::Struct
     const :code, T.nilable(String)
     const :title, T.nilable(String)

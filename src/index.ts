@@ -1,4 +1,4 @@
-import { generateTypes } from './interface-factory';
+import { generateTypes } from './validator-factory';
 
 export * from './name-factory';
 

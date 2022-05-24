@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { generateTypes } from './interface-factory';
+import { generateTypes } from './validator-factory';
 
 const pkg = require('../package.json');
 const withVersion = `${pkg.name}@${pkg.version}`;
@@ -14,7 +14,7 @@ describe('InterfaceFactory', () => {
     );
 
     // ACT
-    const int = generateTypes(service, {
+    const files = generateTypes(service, {
       sorbet: {
         typesModule: 'types',
         enumsModule: 'enums',
@@ -22,8 +22,9 @@ describe('InterfaceFactory', () => {
     });
 
     // ASSERT
-    for (const file of [...int]) {
+    for (const file of [...files]) {
       const path = join('src', 'snapshot', ...file.path);
+      console.log(path);
       const snapshot = readFileSync(path)
         .toString()
         .replace(withoutVersion, withVersion);
