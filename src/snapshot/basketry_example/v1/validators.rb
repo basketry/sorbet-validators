@@ -197,6 +197,108 @@ module BasketryExample::V1
 
     sig do
       params(
+        string_no_format: T.nilable(String),
+        string_date: T.nilable(Date),
+        string_date_time: T.nilable(DateTime),
+        integer_no_format: T.nilable(Integer),
+        integer_int32: T.nilable(Integer),
+        integer_int64: T.nilable(Integer),
+        number_no_format: T.nilable(Numeric),
+        number_float: T.nilable(Float),
+        number_double: T.nilable(Float)
+      ).returns(
+        T::Array[BasketryExample::V1::Types::ValidationError]
+      )
+    end
+    def validate_exhaustive_formats_parameters(string_no_format:, string_date:, string_date_time:, integer_no_format:, integer_int32:, integer_int64:, number_no_format:, number_float:, number_double:)
+      validator_internal_errors = T.let([], T::Array[BasketryExample::V1::Types::ValidationError])
+
+      # "non-local" type check
+      if !T.unsafe(string_no_format).nil? && !T.unsafe(string_no_format).is_a?(String)
+        validator_internal_errors << BasketryExample::V1::Types::ValidationError.new(
+          code: 'TYPE',
+          title: '"string_no_format" must be a String if supplied',
+          path: 'string_no_format'
+        )
+      end
+
+      # "non-local" type check
+      if !T.unsafe(string_date).nil? && !T.unsafe(string_date).is_a?(T.untyped)
+        validator_internal_errors << BasketryExample::V1::Types::ValidationError.new(
+          code: 'TYPE',
+          title: '"string_date" must be a T.untyped if supplied',
+          path: 'string_date'
+        )
+      end
+
+      # "non-local" type check
+      if !T.unsafe(string_date_time).nil? && !T.unsafe(string_date_time).is_a?(T.untyped)
+        validator_internal_errors << BasketryExample::V1::Types::ValidationError.new(
+          code: 'TYPE',
+          title: '"string_date_time" must be a T.untyped if supplied',
+          path: 'string_date_time'
+        )
+      end
+
+      # "non-local" type check
+      if !T.unsafe(integer_no_format).nil? && !T.unsafe(integer_no_format).is_a?(Integer)
+        validator_internal_errors << BasketryExample::V1::Types::ValidationError.new(
+          code: 'TYPE',
+          title: '"integer_no_format" must be a Integer if supplied',
+          path: 'integer_no_format'
+        )
+      end
+
+      # "non-local" type check
+      if !T.unsafe(integer_int32).nil? && !T.unsafe(integer_int32).is_a?(Integer)
+        validator_internal_errors << BasketryExample::V1::Types::ValidationError.new(
+          code: 'TYPE',
+          title: '"integer_int32" must be a Integer if supplied',
+          path: 'integer_int32'
+        )
+      end
+
+      # "non-local" type check
+      if !T.unsafe(integer_int64).nil? && !T.unsafe(integer_int64).is_a?(T.untyped)
+        validator_internal_errors << BasketryExample::V1::Types::ValidationError.new(
+          code: 'TYPE',
+          title: '"integer_int64" must be a T.untyped if supplied',
+          path: 'integer_int64'
+        )
+      end
+
+      # "non-local" type check
+      if !T.unsafe(number_no_format).nil? && !T.unsafe(number_no_format).is_a?(Numeric)
+        validator_internal_errors << BasketryExample::V1::Types::ValidationError.new(
+          code: 'TYPE',
+          title: '"number_no_format" must be a Numeric if supplied',
+          path: 'number_no_format'
+        )
+      end
+
+      # "non-local" type check
+      if !T.unsafe(number_float).nil? && !T.unsafe(number_float).is_a?(T.untyped)
+        validator_internal_errors << BasketryExample::V1::Types::ValidationError.new(
+          code: 'TYPE',
+          title: '"number_float" must be a T.untyped if supplied',
+          path: 'number_float'
+        )
+      end
+
+      # "non-local" type check
+      if !T.unsafe(number_double).nil? && !T.unsafe(number_double).is_a?(T.untyped)
+        validator_internal_errors << BasketryExample::V1::Types::ValidationError.new(
+          code: 'TYPE',
+          title: '"number_double" must be a T.untyped if supplied',
+          path: 'number_double'
+        )
+      end
+
+      validator_internal_errors
+    end
+
+    sig do
+      params(
         query_string: T.nilable(String),
         query_enum: T.nilable(BasketryExample::V1::Enums::ExhaustiveParamsQueryEnum),
         query_number: T.nilable(Numeric),

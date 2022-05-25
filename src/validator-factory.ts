@@ -18,15 +18,13 @@ import { block, from, indent } from './utils';
 import { SorbetOptions } from '@basketry/sorbet/lib/types';
 import {
   buildEnumNamespace,
-  buildTypeNamespace,
+  buildTypeName,
   buildParameterName,
-  buildInterfaceNamespace,
 } from '@basketry/sorbet/lib/name-factory';
 import { warning } from './warning';
 import {
   buildFullyQualifiedValidationErrorType,
   buildMethodValidatorName,
-  buildTypeName,
   buildValidationErrorFilepath,
   buildValidationErrorName,
   buildValidatorsFilepath,
@@ -353,6 +351,11 @@ class Builder {
     type: Parameter | Property | ReturnType;
     skipArrayify?: boolean;
   }): string {
-    return buildTypeName(type, this.service, this.options, skipArrayify);
+    return buildTypeName({
+      type,
+      service: this.service,
+      options: this.options,
+      skipArrayify,
+    });
   }
 }
