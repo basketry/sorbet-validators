@@ -38,16 +38,26 @@ import {
   rulelessFactories,
 } from './guard-clause-factories';
 
+export type SorbetValidatorOptions = Omit<SorbetOptions, 'sorbet'> & {
+  sorbet?: SorbetOptions['sorbet'] & {
+    runtime?: boolean;
+    rubocopDisable?: string[];
+  };
+};
+
 const errorArrayName = snake('validator_internal_errors');
 
-export const generateTypes: Generator = (service, options?: SorbetOptions) => {
+export const generateTypes: Generator = (
+  service,
+  options?: SorbetValidatorOptions,
+) => {
   return new Builder(service, options).build();
 };
 
 class Builder {
   constructor(
     private readonly service: Service,
-    private readonly options?: SorbetOptions,
+    private readonly options?: SorbetValidatorOptions,
   ) {}
 
   build(): File[] {
@@ -133,6 +143,13 @@ class Builder {
     yield '# typed: strict';
     yield '';
 
+    if (this.options?.sorbet?.rubocopDisable?.length) {
+      for (const rule of this.options?.sorbet?.rubocopDisable) {
+        yield `# rubocop:disable ${rule}`;
+      }
+      yield '';
+    }
+
     if (this.options?.sorbet?.fileIncludes?.length) {
       for (const include of this.options.sorbet.fileIncludes) {
         yield `require '${include}'`;
@@ -164,6 +181,13 @@ class Builder {
         });
       },
     );
+
+    if (this.options?.sorbet?.rubocopDisable?.length) {
+      yield '';
+      for (const rule of this.options?.sorbet?.rubocopDisable) {
+        yield `# rubocop:enable ${rule}`;
+      }
+    }
 
     yield '';
   }
@@ -279,39 +303,44 @@ class Builder {
     yield* block(
       `def ${snake(`validate_${snake(e.name.value)}`)}(${snake(e.name.value)})`,
       function* () {
-        yield `case T.unsafe(${snake(e.name.value)})`;
-        yield 'when';
-        yield* indent(function* () {
-          for (let i = 0; i < e.values.length; i++) {
-            const value = e.values[i];
-            yield `${buildEnumNamespace(self.service, self.options)}::${pascal(
-              e.name.value,
-            )}::${constant(value.value)}${
-              i === e.values.length - 1 ? '' : ','
-            }`;
-          }
-          yield `[]`;
-        });
-        yield 'else';
-        yield* indent(function* () {
-          yield '[';
-          yield* indent(
-            buildError(
-              'ENUM',
-              `"${snake(
-                e.name.value,
-              )}" must be a member of \`${buildEnumNamespace(
+        if (self.options?.sorbet?.runtime !== false) {
+          yield `case T.unsafe(${snake(e.name.value)})`;
+          yield 'when';
+          yield* indent(function* () {
+            for (let i = 0; i < e.values.length; i++) {
+              const value = e.values[i];
+              yield `${buildEnumNamespace(
                 self.service,
                 self.options,
-              )}::${pascal(e.name.value)}\``,
-              '# TODO',
-              errorType,
-              { skipPush: true, trailingComma: true },
-            ),
-          );
-          yield ']';
-        });
-        yield 'end';
+              )}::${pascal(e.name.value)}::${constant(value.value)}${
+                i === e.values.length - 1 ? '' : ','
+              }`;
+            }
+            yield `[]`;
+          });
+          yield 'else';
+          yield* indent(function* () {
+            yield '[';
+            yield* indent(
+              buildError(
+                'ENUM',
+                `"${snake(
+                  e.name.value,
+                )}" must be a member of \`${buildEnumNamespace(
+                  self.service,
+                  self.options,
+                )}::${pascal(e.name.value)}\``,
+                '# TODO',
+                errorType,
+                { skipPush: true, trailingComma: true },
+              ),
+            );
+            yield ']';
+          });
+          yield 'end';
+        } else {
+          yield '[]';
+        }
       },
     );
   }

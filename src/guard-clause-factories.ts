@@ -1,4 +1,3 @@
-import { SorbetOptions } from '@basketry/sorbet/lib/types';
 import {
   isRequired,
   Parameter,
@@ -7,9 +6,10 @@ import {
   Service,
   ValidationRule,
 } from 'basketry';
-import { pascal, snake, constant } from 'case';
+import { snake, constant } from 'case';
 import { buildTypeName } from './name-factory';
 import { block, indent } from './utils';
+import { SorbetValidatorOptions } from './validator-factory';
 
 const errorArrayName = snake('validator_internal_errors');
 
@@ -18,7 +18,7 @@ export type GuardClauseFactory = (
   rule: ValidationRule,
   errorType: string,
   service: Service,
-  options: SorbetOptions | undefined,
+  options: SorbetValidatorOptions | undefined,
   typeName?: string,
 ) => Iterable<string>;
 
@@ -26,7 +26,7 @@ export type RulelessGuardClauseFactory = (
   param: Parameter | Property,
   errorType: string,
   service: Service,
-  options: SorbetOptions | undefined,
+  options: SorbetValidatorOptions | undefined,
   typeName?: string,
 ) => Iterable<string>;
 
@@ -38,7 +38,7 @@ function buildName(parent: string | undefined, child: string) {
 }
 
 export function* buildError(
-  id: string,
+  code: string,
   title: string,
   path: string,
   errorType: string,
@@ -54,7 +54,7 @@ export function* buildError(
 
   yield `${skipPush ? '' : `${errorArrayName} << `}${errorType}.new(`;
   yield* indent(function* () {
-    yield `code: '${constant(id)}',`;
+    yield `code: '${constant(code)}',`;
     yield `title: '${title}',`;
     yield `path: '${path}'`;
   });
@@ -89,7 +89,7 @@ function must(item: { rules: ValidationRule[] }, value: string) {
 function buildValidatorName(
   type: Parameter | Property | ReturnType,
   service: Service,
-  options: SorbetOptions | undefined,
+  options: SorbetValidatorOptions | undefined,
 ): string {
   const x = buildTypeName(type, service, options, true).split('::');
 
@@ -103,7 +103,7 @@ const buildRequiredClause: RulelessGuardClauseFactory = function* (
   options,
   typeName,
 ) {
-  if (isRequired(param)) {
+  if (options?.sorbet?.runtime !== false && isRequired(param)) {
     yield '';
     yield `# required`;
     yield* block(
@@ -127,7 +127,7 @@ const buildNonLocalTypeCheckClause: RulelessGuardClauseFactory = function* (
   options,
   typeName,
 ) {
-  if (!param.isLocal) {
+  if (options?.sorbet?.runtime !== false && !param.isLocal) {
     const rootTypeName = buildTypeName(param, service, options, true);
     const paramName = buildName(typeName, param.name.value);
     const unsafe = `T.unsafe(${paramName})`;
@@ -181,28 +181,39 @@ const buildLocalTypeCheckClause: RulelessGuardClauseFactory = function* (
   options,
   typeName,
 ) {
-  const name = buildName(typeName, param.name.value);
-  const unsafe = isRequired(param) ? `T.unsafe(${name})` : name;
-  const fn = buildValidatorName(param, service, options);
-
   if (param.isLocal) {
+    const name = buildName(typeName, param.name.value);
+    const unsafe = isRequired(param) ? `T.unsafe(${name})` : name;
+    const fn = buildValidatorName(param, service, options);
+
     yield '';
-    if (param.isArray) {
-      if (isRequired(param)) {
-        yield* block(`if !${unsafe}.nil?`, function* () {
+    yield '# local type check';
+    if (options?.sorbet?.runtime !== false) {
+      if (param.isArray) {
+        if (isRequired(param)) {
+          yield* block(`if !${unsafe}.nil?`, function* () {
+            yield `${
+              typeName ? must(param, name) : name
+            }.each { |x| ${errorArrayName}.concat(${fn}(x)) }`;
+          });
+        } else {
           yield `${
             typeName ? must(param, name) : name
-          }.each { |x| ${errorArrayName}.concat(${fn}(x)) }`;
-        });
+          }&.each { |x| ${errorArrayName}.concat(${fn}(x)) }`;
+        }
       } else {
-        yield `${
-          typeName ? must(param, name) : name
-        }&.each { |x| ${errorArrayName}.concat(${fn}(x)) }`;
+        yield* block(`if !${unsafe}.nil?`, function* () {
+          yield `${errorArrayName}.concat(${fn}(${typeName ? must(param, name) : name}))`;
+        });
       }
     } else {
-      yield* block(`if !${unsafe}.nil?`, function* () {
-        yield `${errorArrayName}.concat(${fn}(${typeName ? must(param, name) : name}))`; // must?
-      });
+      if (param.isArray) {
+        yield `${name}.each { |x| ${errorArrayName}.concat(${fn}(x)) }`;
+      } else {
+        yield `${errorArrayName}.concat(${fn}(${
+          typeName ? must(param, name) : name
+        }))`;
+      }
     }
   }
   return;
