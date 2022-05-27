@@ -42,6 +42,7 @@ module BasketryExample::V1
     def validate_create_gizmo_parameters(size:)
       validator_internal_errors = T.let([], T::Array[BasketryExample::V1::Types::ValidationError])
 
+      # local type check
       if !size.nil?
         validator_internal_errors.concat(validate_create_gizmo_size(size))
       end
@@ -108,6 +109,7 @@ module BasketryExample::V1
     def validate_create_widget_parameters(body:)
       validator_internal_errors = T.let([], T::Array[BasketryExample::V1::Types::ValidationError])
 
+      # local type check
       if !body.nil?
         validator_internal_errors.concat(validate_create_widget_body(body))
       end
@@ -346,6 +348,7 @@ module BasketryExample::V1
         )
       end
 
+      # local type check
       if !query_enum.nil?
         validator_internal_errors.concat(validate_exhaustive_params_query_enum(query_enum))
       end
@@ -386,6 +389,7 @@ module BasketryExample::V1
         )
       end
 
+      # local type check
       query_enum_array&.each { |x| validator_internal_errors.concat(validate_exhaustive_params_query_enum_array(x)) }
 
       # "non-local" type check
@@ -442,6 +446,7 @@ module BasketryExample::V1
         )
       end
 
+      # local type check
       if !T.unsafe(path_enum).nil?
         validator_internal_errors.concat(validate_exhaustive_params_path_enum(path_enum))
       end
@@ -527,6 +532,7 @@ module BasketryExample::V1
         )
       end
 
+      # local type check
       if !T.unsafe(path_enum_array).nil?
         path_enum_array.each { |x| validator_internal_errors.concat(validate_exhaustive_params_path_enum_array(x)) }
       end
@@ -594,6 +600,7 @@ module BasketryExample::V1
         )
       end
 
+      # local type check
       if !header_enum.nil?
         validator_internal_errors.concat(validate_exhaustive_params_header_enum(header_enum))
       end
@@ -634,6 +641,7 @@ module BasketryExample::V1
         )
       end
 
+      # local type check
       header_enum_array&.each { |x| validator_internal_errors.concat(validate_exhaustive_params_header_enum_array(x)) }
 
       # "non-local" type check
@@ -663,6 +671,7 @@ module BasketryExample::V1
         )
       end
 
+      # local type check
       if !body.nil?
         validator_internal_errors.concat(validate_exhaustive_params_body(body))
       end
@@ -704,6 +713,7 @@ module BasketryExample::V1
         )
       end
 
+      # local type check
       if !gizmo.size.nil?
         validator_internal_errors.concat(validate_product_size(T.must(gizmo.size)))
       end
@@ -835,10 +845,12 @@ module BasketryExample::V1
         )
       end
 
+      # local type check
       if !widget.foo.nil?
         validator_internal_errors.concat(validate_widget_foo(T.must(widget.foo)))
       end
 
+      # local type check
       if !widget.size.nil?
         validator_internal_errors.concat(validate_product_size(T.must(widget.size)))
       end
@@ -943,10 +955,12 @@ module BasketryExample::V1
         )
       end
 
+      # local type check
       if !new_widget.foo.nil?
         validator_internal_errors.concat(validate_new_widget_foo(T.must(new_widget.foo)))
       end
 
+      # local type check
       if !new_widget.size.nil?
         validator_internal_errors.concat(validate_product_size(T.must(new_widget.size)))
       end
@@ -970,6 +984,7 @@ module BasketryExample::V1
         )
       end
 
+      # local type check
       if !T.unsafe(gizmos_response.data).nil?
         gizmos_response.data.each { |x| validator_internal_errors.concat(validate_gizmo(x)) }
       end
