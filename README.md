@@ -1,7 +1,7 @@
 [![main](https://github.com/basketry/sorbet-validators/workflows/build/badge.svg?branch=main&event=push)](https://github.com/basketry/sorbet-validators/actions?query=workflow%3Abuild+branch%3Amain+event%3Apush)
 [![master](https://img.shields.io/npm/v/@basketry/sorbet-validators)](https://www.npmjs.com/package/@basketry/sorbet-validators)
 
-# Sorbet
+# Sorbet Validators
 
 [Basketry generator](https://github.com/basketry/basketry) for generating [Sorbet](https://sorbet.org/) validation methods. This parser can be coupled with any Basketry parser.
 
