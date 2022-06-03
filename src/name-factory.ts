@@ -77,39 +77,3 @@ export function buildValidatorsFilepath(
 export function buildMethodValidatorName(method: Method): string {
   return snake(`validate_${snake(method.name.value)}_parameters`);
 }
-
-export function buildTypeName(
-  type: Parameter | Property | ReturnType,
-  service: Service,
-  options: SorbetOptions | undefined,
-  skipArrayify: boolean = false,
-): string {
-  const arrayify = (n: string) =>
-    type.isArray && !skipArrayify ? `T::Array[${n}]` : n;
-
-  if (type.isUnknown) {
-    return arrayify('T.untyped');
-  } else if (type.isLocal) {
-    let moduleNamespace: string;
-    if (service.types.some((t) => t.name.value === type.typeName.value)) {
-      moduleNamespace = buildTypeNamespace(service, options);
-    } else {
-      moduleNamespace = buildEnumNamespace(service, options);
-    }
-
-    return arrayify(`${moduleNamespace}::${pascal(type.typeName.value)}`);
-  }
-
-  switch (type.typeName.value) {
-    case 'string':
-      return arrayify('String');
-    case 'number':
-      return arrayify('Numeric');
-    case 'integer':
-      return arrayify('Integer');
-    case 'boolean':
-      return arrayify('T::Boolean');
-    default:
-      return arrayify('T.untyped');
-  }
-}

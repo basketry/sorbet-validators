@@ -7,7 +7,7 @@ import {
   ValidationRule,
 } from 'basketry';
 import { snake, constant } from 'case';
-import { buildTypeName } from './name-factory';
+import { buildTypeName } from '@basketry/sorbet';
 import { block, indent } from './utils';
 import { SorbetValidatorOptions } from './validator-factory';
 
@@ -91,7 +91,9 @@ function buildValidatorName(
   service: Service,
   options: SorbetValidatorOptions | undefined,
 ): string {
-  const x = buildTypeName(type, service, options, true).split('::');
+  const x = buildTypeName({ type, service, options, skipArrayify: true }).split(
+    '::',
+  );
 
   return `validate_${snake(x[x.length - 1])}`;
 }
@@ -120,15 +122,20 @@ const buildRequiredClause: RulelessGuardClauseFactory = function* (
   }
 };
 
-const buildNonLocalTypeCheckClause: RulelessGuardClauseFactory = function* (
+const buildPrimitiveTypeCheckClause: RulelessGuardClauseFactory = function* (
   param,
   errorType,
   service,
   options,
   typeName,
 ) {
-  if (options?.sorbet?.runtime !== false && !param.isLocal) {
-    const rootTypeName = buildTypeName(param, service, options, true);
+  if (options?.sorbet?.runtime !== false && param.isPrimitive) {
+    const rootTypeName = buildTypeName({
+      type: param,
+      service,
+      options,
+      skipArrayify: true,
+    });
     const paramName = buildName(typeName, param.name.value);
     const unsafe = `T.unsafe(${paramName})`;
 
@@ -174,14 +181,14 @@ const buildNonLocalTypeCheckClause: RulelessGuardClauseFactory = function* (
   return;
 };
 
-const buildLocalTypeCheckClause: RulelessGuardClauseFactory = function* (
+const buildCustomTypeCheckClause: RulelessGuardClauseFactory = function* (
   param,
   errorType,
   service,
   options,
   typeName,
 ) {
-  if (param.isLocal) {
+  if (!param.isPrimitive) {
     const name = buildName(typeName, param.name.value);
     const unsafe = isRequired(param) ? `T.unsafe(${name})` : name;
     const fn = buildValidatorName(param, service, options);
@@ -221,8 +228,8 @@ const buildLocalTypeCheckClause: RulelessGuardClauseFactory = function* (
 
 export const rulelessFactories = [
   buildRequiredClause,
-  buildNonLocalTypeCheckClause,
-  buildLocalTypeCheckClause,
+  buildPrimitiveTypeCheckClause,
+  buildCustomTypeCheckClause,
 ];
 
 export const buildStringMaxLengthClause: GuardClauseFactory = function* (

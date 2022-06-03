@@ -225,19 +225,19 @@ module BasketryExample::V1
       end
 
       # "non-local" type check
-      if !T.unsafe(string_date).nil? && !T.unsafe(string_date).is_a?(T.untyped)
+      if !T.unsafe(string_date).nil? && !T.unsafe(string_date).is_a?(Date)
         validator_internal_errors << BasketryExample::V1::Types::ValidationError.new(
           code: 'TYPE',
-          title: '"string_date" must be a T.untyped if supplied',
+          title: '"string_date" must be a Date if supplied',
           path: 'string_date'
         )
       end
 
       # "non-local" type check
-      if !T.unsafe(string_date_time).nil? && !T.unsafe(string_date_time).is_a?(T.untyped)
+      if !T.unsafe(string_date_time).nil? && !T.unsafe(string_date_time).is_a?(DateTime)
         validator_internal_errors << BasketryExample::V1::Types::ValidationError.new(
           code: 'TYPE',
-          title: '"string_date_time" must be a T.untyped if supplied',
+          title: '"string_date_time" must be a DateTime if supplied',
           path: 'string_date_time'
         )
       end
@@ -261,10 +261,10 @@ module BasketryExample::V1
       end
 
       # "non-local" type check
-      if !T.unsafe(integer_int64).nil? && !T.unsafe(integer_int64).is_a?(T.untyped)
+      if !T.unsafe(integer_int64).nil? && !T.unsafe(integer_int64).is_a?(Integer)
         validator_internal_errors << BasketryExample::V1::Types::ValidationError.new(
           code: 'TYPE',
-          title: '"integer_int64" must be a T.untyped if supplied',
+          title: '"integer_int64" must be a Integer if supplied',
           path: 'integer_int64'
         )
       end
@@ -279,19 +279,19 @@ module BasketryExample::V1
       end
 
       # "non-local" type check
-      if !T.unsafe(number_float).nil? && !T.unsafe(number_float).is_a?(T.untyped)
+      if !T.unsafe(number_float).nil? && !T.unsafe(number_float).is_a?(Float)
         validator_internal_errors << BasketryExample::V1::Types::ValidationError.new(
           code: 'TYPE',
-          title: '"number_float" must be a T.untyped if supplied',
+          title: '"number_float" must be a Float if supplied',
           path: 'number_float'
         )
       end
 
       # "non-local" type check
-      if !T.unsafe(number_double).nil? && !T.unsafe(number_double).is_a?(T.untyped)
+      if !T.unsafe(number_double).nil? && !T.unsafe(number_double).is_a?(Float)
         validator_internal_errors << BasketryExample::V1::Types::ValidationError.new(
           code: 'TYPE',
-          title: '"number_double" must be a T.untyped if supplied',
+          title: '"number_double" must be a Float if supplied',
           path: 'number_double'
         )
       end
