@@ -21,7 +21,7 @@ import {
   buildTypeName,
   buildParameterName,
 } from '@basketry/sorbet/lib/name-factory';
-import { warning } from './warning';
+import { warning } from '@basketry/sorbet/lib/warning';
 import {
   buildFullyQualifiedValidationErrorType,
   buildMethodValidatorName,
@@ -96,7 +96,7 @@ class Builder {
   }
 
   private *buildValidationError(): Iterable<string> {
-    yield warning;
+    yield warning(this.service, require('../package.json'));
     yield '';
 
     yield '# typed: strict';
@@ -137,7 +137,7 @@ class Builder {
     const self = this;
     const methods = this.service.interfaces.flatMap((i) => i.methods);
 
-    yield warning;
+    yield warning(this.service, require('../package.json'));
     yield '';
 
     yield '# typed: strict';
