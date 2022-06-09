@@ -1,6 +1,6 @@
 {
   "name": "@basketry/sorbet-validators",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Basketry generator for generating Sorbet validation methods",
   "main": "./lib/index.js",
   "scripts": {
