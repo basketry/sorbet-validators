@@ -82,8 +82,12 @@ function buildConditions(
   }
 }
 
-function must(item: { rules: ValidationRule[] }, value: string) {
-  return isRequired(item) ? value : `T.must(${value})`;
+function must(
+  item: { rules: ValidationRule[] },
+  value: string,
+  skip: boolean = false,
+) {
+  return skip || isRequired(item) ? value : `T.must(${value})`;
 }
 
 function buildValidatorName(
@@ -334,9 +338,12 @@ export const buildNumberMultipleOfClause: GuardClauseFactory = function* (
   typeName,
 ) {
   if (rule.id === 'number-multiple-of') {
+    const skipMust = !typeName && !options?.sorbet?.runtime;
     const conditions = buildConditions(typeName, param, (name: string) => [
       `${buildName(typeName, name)}.is_a?(Numeric)`,
-      `${must(param, buildName(typeName, name))} % ${rule.value.value} != 0`,
+      `${must(param, buildName(typeName, name), skipMust)} % ${
+        rule.value.value
+      } != 0`,
     ]);
 
     yield '';
@@ -364,9 +371,12 @@ export const buildNumberGreaterThanClause: GuardClauseFactory = function* (
   typeName,
 ) {
   if (rule.id === 'number-gt') {
+    const skipMust = !typeName && !options?.sorbet?.runtime;
     const conditions = buildConditions(typeName, param, (name: string) => [
       `${buildName(typeName, name)}.is_a?(Numeric)`,
-      `${must(param, buildName(typeName, name))} <= ${rule.value.value}`,
+      `${must(param, buildName(typeName, name), skipMust)} <= ${
+        rule.value.value
+      }`,
     ]);
 
     yield '';
@@ -394,9 +404,12 @@ export const buildNumberGreaterOrEqualClause: GuardClauseFactory = function* (
   typeName,
 ) {
   if (rule.id === 'number-gte') {
+    const skipMust = !typeName && !options?.sorbet?.runtime;
     const conditions = buildConditions(typeName, param, (name: string) => [
       `${buildName(typeName, name)}.is_a?(Numeric)`,
-      `${must(param, buildName(typeName, name))} < ${rule.value.value}`,
+      `${must(param, buildName(typeName, name), skipMust)} < ${
+        rule.value.value
+      }`,
     ]);
 
     yield '';
@@ -425,9 +438,12 @@ export const buildNumberLessThanClause: GuardClauseFactory = function* (
   typeName,
 ) {
   if (rule.id === 'number-lt') {
+    const skipMust = !typeName && !options?.sorbet?.runtime;
     const conditions = buildConditions(typeName, param, (name: string) => [
       `${buildName(typeName, name)}.is_a?(Numeric)`,
-      `${must(param, buildName(typeName, name))} >= ${rule.value.value}`,
+      `${must(param, buildName(typeName, name), skipMust)} >= ${
+        rule.value.value
+      }`,
     ]);
 
     yield '';
@@ -455,9 +471,12 @@ export const buildNumberLessOrEqualClause: GuardClauseFactory = function* (
   typeName,
 ) {
   if (rule.id === 'number-lte') {
+    const skipMust = !typeName && !options?.sorbet?.runtime;
     const conditions = buildConditions(typeName, param, (name: string) => [
       `${buildName(typeName, name)}.is_a?(Numeric)`,
-      `${must(param, buildName(typeName, name))} > ${rule.value.value}`,
+      `${must(param, buildName(typeName, name), skipMust)} > ${
+        rule.value.value
+      }`,
     ]);
 
     yield '';
