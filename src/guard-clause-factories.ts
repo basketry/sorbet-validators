@@ -9,7 +9,7 @@ import {
 import { snake, constant } from 'case';
 import { buildTypeName } from '@basketry/sorbet';
 import { block, indent } from './utils';
-import { SorbetValidatorOptions } from './validator-factory';
+import { SorbetValidatorOptions } from './types';
 
 const errorArrayName = snake('validator_internal_errors');
 

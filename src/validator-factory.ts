@@ -37,13 +37,7 @@ import {
   ruleFactories,
   rulelessFactories,
 } from './guard-clause-factories';
-
-export type SorbetValidatorOptions = Omit<SorbetOptions, 'sorbet'> & {
-  sorbet?: SorbetOptions['sorbet'] & {
-    runtime?: boolean;
-    rubocopDisable?: string[];
-  };
-};
+import { SorbetValidatorOptions } from './types';
 
 const errorArrayName = snake('validator_internal_errors');
 
