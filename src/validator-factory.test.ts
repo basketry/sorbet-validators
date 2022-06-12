@@ -22,7 +22,6 @@ describe('InterfaceFactory', () => {
     // ASSERT
     for (const file of [...files]) {
       const path = join('src', 'snapshot', ...file.path);
-      console.log(path);
       const snapshot = readFileSync(path)
         .toString()
         .replace(withoutVersion, withVersion);
