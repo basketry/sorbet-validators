@@ -94,7 +94,7 @@ module BasketryExample::V1
       end
 
       # string-pattern
-      if factors.is_a?(Array) && !factors.any? { |x| x.is_a?(String) && /[0-9a-fA-F]+/.match?(x) }
+      if factors.is_a?(Array) && !factors.any? { |x| x.is_a?(String) && !/[0-9a-fA-F]+/.match?(x) }
         validator_internal_errors << BasketryExample::V1::Types::ValidationError.new(
           code: 'STRING_PATTERN',
           title: '"factors" must match the pattern /[0-9a-fA-F]+/',
@@ -780,7 +780,7 @@ module BasketryExample::V1
       end
 
       # string-pattern
-      if widget.name.is_a?(String) && /[0-9a-fA-F]+/.match?(widget.name)
+      if widget.name.is_a?(String) && !/[0-9a-fA-F]+/.match?(widget.name)
         validator_internal_errors << BasketryExample::V1::Types::ValidationError.new(
           code: 'STRING_PATTERN',
           title: '"widget.name" must match the pattern /[0-9a-fA-F]+/',
@@ -890,7 +890,7 @@ module BasketryExample::V1
       end
 
       # string-pattern
-      if new_widget.name.is_a?(String) && /[0-9a-fA-F]+/.match?(new_widget.name)
+      if new_widget.name.is_a?(String) && !/[0-9a-fA-F]+/.match?(new_widget.name)
         validator_internal_errors << BasketryExample::V1::Types::ValidationError.new(
           code: 'STRING_PATTERN',
           title: '"new_widget.name" must match the pattern /[0-9a-fA-F]+/',

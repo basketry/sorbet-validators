@@ -319,7 +319,7 @@ export const buildStringPatternClause: GuardClauseFactory = function* (
 
     const conditions = buildConditions(typeName, param, (name: string) => [
       `${buildName(typeName, name)}.is_a?(String)`,
-      `/${pattern}/.match?(${buildName(typeName, name)})`,
+      `!/${pattern}/.match?(${buildName(typeName, name)})`,
     ]);
 
     yield '';
