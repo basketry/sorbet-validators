@@ -307,9 +307,19 @@ export const buildStringPatternClause: GuardClauseFactory = function* (
   typeName,
 ) {
   if (rule.id === 'string-pattern') {
+    let pattern = rule.pattern.value;
+
+    if (pattern.startsWith('^')) {
+      pattern = `\\A${pattern.substring(1)}`;
+    }
+
+    if (pattern.endsWith('$')) {
+      pattern = `${pattern.substring(0, pattern.length - 1)}\\z`;
+    }
+
     const conditions = buildConditions(typeName, param, (name: string) => [
       `${buildName(typeName, name)}.is_a?(String)`,
-      `/${rule.pattern.value}/.match?(${buildName(typeName, name)})`,
+      `/${pattern}/.match?(${buildName(typeName, name)})`,
     ]);
 
     yield '';
@@ -318,9 +328,10 @@ export const buildStringPatternClause: GuardClauseFactory = function* (
       `if ${conditions.join(' && ')}`,
       buildError(
         rule.id,
-        `"${buildName(typeName, param.name.value)}" must match the pattern /${
-          rule.pattern.value
-        }/`,
+        `"${buildName(
+          typeName,
+          param.name.value,
+        )}" must match the pattern /${pattern}/`,
         buildName(typeName, param.name.value),
         errorType,
       ),
