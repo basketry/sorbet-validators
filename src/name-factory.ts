@@ -11,12 +11,6 @@ import {
 
 import { SorbetValidatorOptions } from './types';
 
-function subfolder(options?: SorbetValidatorOptions): string[] {
-  return (options?.basketry?.subfolder || '')
-    .split(sep)
-    .filter((x) => !!x && x !== '.' && x !== '..');
-}
-
 export function buildFullyQualifiedType(
   type: Type,
   service: Service,
@@ -50,7 +44,6 @@ export function buildValidationErrorFilepath(
   const namespace = buildValidationErrorNamespace(service, options);
 
   return [
-    ...subfolder(options),
     ...namespace.split('::').map(snake),
     `${snake(buildValidationErrorName())}.rb`,
   ];
@@ -72,7 +65,6 @@ export function buildValidatorsFilepath(
   const namespace = buildValidatorsNamespace(service, options);
 
   return [
-    ...subfolder(options),
     ...namespace.split('::').map(snake),
     `${snake(buildValidatorsName())}.rb`,
   ];
