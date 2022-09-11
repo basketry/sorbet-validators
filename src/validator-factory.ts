@@ -70,6 +70,10 @@ class Builder {
     ];
   }
 
+  private warning() {
+    return warning(this.service, require('../package.json'), this.options);
+  }
+
   private *comment(
     text: string | Literal<string> | Literal<string>[] | undefined,
   ): Iterable<string> {
@@ -90,7 +94,7 @@ class Builder {
   }
 
   private *buildValidationError(): Iterable<string> {
-    yield warning(this.service, require('../package.json'));
+    yield this.warning();
     yield '';
 
     yield '# typed: strict';
@@ -131,7 +135,7 @@ class Builder {
     const self = this;
     const methods = this.service.interfaces.flatMap((i) => i.methods);
 
-    yield warning(this.service, require('../package.json'));
+    yield this.warning();
     yield '';
 
     yield '# typed: strict';
