@@ -13,7 +13,7 @@ import {
 } from 'basketry';
 import { constant, pascal, snake } from 'case';
 
-import { block, from, indent } from './utils';
+import { block, from, indent } from '@basketry/sorbet/lib/utils';
 
 import { SorbetOptions } from '@basketry/sorbet/lib/types';
 import {
