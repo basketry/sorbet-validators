@@ -221,9 +221,12 @@ const buildCustomTypeCheckClause: RulelessGuardClauseFactory = function* (
       if (param.isArray) {
         yield `${name}.each { |x| ${errorArrayName}.concat(${fn}(x)) }`;
       } else {
-        yield `${errorArrayName}.concat(${fn}(${
-          typeName ? must(param, name) : name
-        }))`;
+        const x = typeName ? must(param, name) : name;
+        if (isRequired(param)) {
+          yield `${errorArrayName}.concat(${fn}(${x}))`;
+        } else {
+          yield `${errorArrayName}.concat(${fn}(${x})) unless ${x}.nil?`;
+        }
       }
     }
   }
